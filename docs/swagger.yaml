@@ -1,0 +1,209 @@
+basePath: /
+definitions:
+  handlers.Item:
+    properties:
+      bought:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        minimum: 0
+        type: number
+      quantity:
+        type: integer
+    required:
+    - name
+    - quantity
+    type: object
+info:
+  contact: {}
+  description: API para gerenciamento de compras.
+  title: sacoli API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Retorna o status de funcionamento da API.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Verifica a saúde da API
+      tags:
+      - health
+  /items:
+    get:
+      description: Retorna todos os itens cadastrados.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handlers.Item'
+            type: array
+      summary: Lista os itens
+      tags:
+      - items
+    post:
+      consumes:
+      - application/json
+      description: Cadastra um novo item na lista. O ID é gerado automaticamente.
+      parameters:
+      - description: Dados do item
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.Item'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.Item'
+        "400":
+          description: Corpo da requisição inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Cria um item
+      tags:
+      - items
+  /items/{id}:
+    delete:
+      description: Remove um item da lista a partir do seu ID.
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Item não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Remove um item
+      tags:
+      - items
+    get:
+      description: Retorna um único item a partir do seu ID.
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Item'
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Item não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Busca um item por ID
+      tags:
+      - items
+    put:
+      consumes:
+      - application/json
+      description: Substitui os dados de um item existente a partir do seu ID.
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Novos dados do item
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.Item'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Item'
+        "400":
+          description: ID ou corpo inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Item não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Atualiza um item
+      tags:
+      - items
+  /items/{id}/bought:
+    patch:
+      description: Define o campo bought do item como true.
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Item'
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Item não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Marca um item como comprado
+      tags:
+      - items
+swagger: "2.0"
